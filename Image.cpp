@@ -71,6 +71,19 @@ ImageType Image::getFileType(const char* filename)
 	return PNG;
 }
 
+int Image::bitRev(int num, size_t size)
+{
+	int reversedNum = 0;
+	int bits = log2(size);
+
+	for (size_t i = 0; i < bits; ++i)
+	{
+		reversedNum |= ((num >> i) & 1) << (bits - 1 - i);
+	}
+
+	return reversedNum;
+}
+
 Image& Image::grayscale()
 {
 	if (channels < 3)
@@ -106,7 +119,19 @@ Image& Image::grayscale()
 
 Image& Image::bitReverse()
 {
+	uint8_t* bufData = new uint8_t[size];
+	memcpy(bufData, data, size);
 
+	for (size_t i = 0; i < height; ++i)
+	{
+		for (size_t j = 0; j < width; ++j)
+		{
+			bufData[bitRev(i, height) * width + bitRev(j, width)] = data[i * width + j];
+		}
+	}
+
+	memcpy(data, bufData, size);
+	delete[] bufData;
 
 	return *this;
 }

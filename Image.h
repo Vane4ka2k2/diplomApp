@@ -22,5 +22,7 @@ struct Image
 	ImageType getFileType(const char* filename);
 
 	Image& grayscale();
+	
+	int bitRev(int num, size_t size);
 	Image& bitReverse();
 };
